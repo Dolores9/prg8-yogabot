@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="style.css">
+    <script defer type = "module" src = "index.js"></script>
+    <title>Document</title>
+</head>
+<body>
+    <section>
+        <h1>MediaPipe simplified Webcam bodypose example</h1>
+            <button id="webcamButton">Loading Pose Model...</button>
+            <button id="plankbutton" data-pose="plank">Record plank pose</button> 
+            <button id="handtofootbutton" data-pose="handtofoot">Record hand to foot pose</button> 
+            <button id="treebutton" data-pose="tree">Record tree pose</button> 
+            <button id="gettinginpositionbutton" data-pose="gettinginposition">Getting in position</button>
+
+          </section>
+          <section id="liveView" class="videoView">
+              <video id="webcam" style="width: 1280px; height: 720px; position: absolute" autoplay playsinline muted></video>
+              <canvas class="output_canvas" id="output_canvas" width="1280" height="720" style="position: absolute; left: 0px; top: 0px;"></canvas>
+          </section>
+        
+</body>
+</html>
