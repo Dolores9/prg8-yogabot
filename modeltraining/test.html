@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="training-style.css">
+    <title>Train document</title>
+</head>
+<body>
+    <header>
+        <h1>
+            Welcome to Yogabot, your beginner yoga trainer.
+        </h1>
+    </header>
+    <div class="intro">
+        <p>This is an application that requires two people.
+         We will go through three poses: the plank, the hand-to-foot, and the tree pose. Perform one of the poses and have your yoga partner click on "classify." 
+         Yogabot will detect which pose it is. If you've done it correctly, a "well done" message will appear on the screen..</p>
+        </div>
+    <div class="buttons">
+        <button id="webcamButton">start de yoga detector</button>
+        <button id="classifyButton">Classify</button>
+    </div>
+
+    <section id="liveView" class="videoView">
+        <video id="webcam" style="width: 1280px; height: 720px; position: absolute" autoplay playsinline muted></video>
+        <canvas class="output_canvas" id="output_canvas" width="1280" height="720" style="position: absolute; left: 0px; top: 0px;"></canvas>
+    </section>
+  
+    <script src="test.js" type="module"></script>
+</body>
+</html>
