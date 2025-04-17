@@ -2,6 +2,7 @@ import kNear from "./knear.js";
 
 const k = 3;
 const machine = new kNear(k);
+const alert = document.getElementById("alert");
 
 //JSON data fetch
 async function trainModel() {
@@ -170,7 +171,8 @@ function classifyCurrentPose() {
     const features = capturePose();
     let prediction = machine.classify(features);
     console.log(`I think this is a ${prediction}`);
-    predictionText.textContent = `I think this is a ${prediction}`;
+    alert.textContent = `I think this is a ${prediction}`;
+
 }
 
 // Start de applicatie zodra de pagina geladen is

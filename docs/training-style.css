@@ -95,3 +95,21 @@ button:hover {
   -webkit-transform: rotateY(180deg);
   -moz-transform: rotateY(180deg);
 }
+
+.alert {
+  font-size: 1.2em;
+  padding: 0.8em 1.2em;
+  background-color: #ffffffd3;
+  color: #000000;
+  border: none;
+  border-radius: 5px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  margin-top: 1rem;
+  text-align: center;
+  max-width: 600px;
+  transition: background-color 0.3s ease;
+}
+
+.alert:hover {
+  background-color: #b4d3e2a6;
+}
