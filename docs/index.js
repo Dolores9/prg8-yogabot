@@ -7,7 +7,7 @@ const alert = document.getElementById("alert");
 //JSON data fetch
 async function trainModel() {
     try {
-        const response = await fetch('../datacollection/data.JSON');
+        const response = await fetch('./data.JSON');
         const data = await response.json();
         console.log("originele data", data);
 
