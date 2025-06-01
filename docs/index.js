@@ -33,13 +33,11 @@ async function trainModel() {
 }
 
 function isValidPose(pose) {
-    // Controleer of het aantal waarden correct is
     if (pose.length !== 99) {
         console.log("Invalid pose length:", pose);
         return false;
     }
 
-    // Controleer of alle waarden binnen het bereik van -1 tot 1 liggen
     for (let value of pose) {
         if (value < -1 || value > 1) {
             console.log("Invalid value in pose:", pose);
@@ -76,7 +74,7 @@ const videoWidth = "1280px";
 const videoHeight = "720px";
 
 
-// Check voor webcam toegang en start de applicatie
+// start de applicatie
 function startApp() {
     const hasGetUserMedia = () => !!(navigator.mediaDevices && navigator.mediaDevices.getUserMedia);
     if (hasGetUserMedia()) {
@@ -111,9 +109,8 @@ function enableCam(event) {
         return;
     }
     webcamRunning = true;
-    // enableWebcamButton.innerText = "Predicting";
     enableWebcamButton.disabled = true;
-    classifyButton.style.display = "inline-block"; // Laat de classify knop zien
+    classifyButton.style.display = "inline-block"; 
 
     const constraints = {
         video: {
@@ -142,7 +139,7 @@ async function predictWebcam() {
     }
 }
 
-// Pose tekenen en opslaan in globalresult
+// Pose tekenen 
 function drawPose(result) {
     canvasCtx.clearRect(0, 0, canvasElement.width, canvasElement.height);
     globalresult = result;
@@ -152,7 +149,7 @@ function drawPose(result) {
     }
 }
 
-// Pose gegevens vastleggen en classificeren
+// Pose gegevens vastleggen
 function capturePose() {
     console.log(`Show data for pose`);
     let temp = [];
