@@ -1,9 +1,9 @@
 const fs = require('fs');
 const path = require('path');
 
-// Functie om de gegevens te laden vanuit data.JSON
+// Gegevens inladen vanuit data.JSON
 function loadOriginalData() {
-    const filePath = path.resolve(__dirname, '../datacollection/data.JSON'); // Pas de pad aan naar jouw bestand
+    const filePath = path.resolve(__dirname, 'data.JSON'); 
     const rawData = fs.readFileSync(filePath);
     const data = JSON.parse(rawData);
     return data;
@@ -11,7 +11,6 @@ function loadOriginalData() {
 
 // Functie om een pose te augmenteren
 function augmentPose(originalPose) {
-    // Voeg een kleine verschuiving toe aan elke waarde
     return originalPose.map(value => value + (Math.random() * 0.05 - 0.025));
 }
 
@@ -37,20 +36,18 @@ async function main() {
         const originalData = loadOriginalData();
         const augmentedData = generateAugmentedData(originalData);
 
-        // Combineer de originele en geaugmenteerde gegevens
         const newData = { ...originalData };
 
         for (const [poseType, poses] of Object.entries(augmentedData)) {
             newData[poseType] = newData[poseType].concat(poses);
         }
 
-        // Sla de gecombineerde gegevens op in data.JSON
-        const filePath = path.resolve(__dirname, 'data.JSON'); // Pas de pad aan naar jouw bestand
+        const filePath = path.resolve(__dirname, 'data.JSON'); 
         fs.writeFileSync(filePath, JSON.stringify(newData, null, 2));
 
         console.log('Augmented data is toegevoegd aan data.JSON.');
     } catch (error) {
-        console.error('Er is een fout opgetreden bij het uitvoeren van data-augmentatie:', error);
+        console.error('Er is een fout opgetreden:', error);
     }
 }
 

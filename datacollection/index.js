@@ -8,25 +8,22 @@ const drawingUtils = new DrawingUtils(canvasCtx);
 
 let poseLandmarker = undefined;
 let webcamRunning = false;
-let lastVideoTime = -1;
-let globalresult
+let globalresult;
 
-const videoWidth = "480px"
-const videoHeight = "270px"
+const videoWidth = 1280;
+const videoHeight = 720;
 
-
-// if webcam access, load landmarker and enable webcam button
-function startApp() {
-    const hasGetUserMedia = () => { var _a; return !!((_a = navigator.mediaDevices) === null || _a === void 0 ? void 0 : _a.getUserMedia); };
-    if (hasGetUserMedia()) {
+// Start de applicatie als DOM geladen is
+document.addEventListener("DOMContentLoaded", () => {
+    if (navigator.mediaDevices?.getUserMedia) {
         createPoseLandmarker();
     } else {
         console.warn("getUserMedia() is not supported by your browser");
     }
-}
+});
 
-// create mediapipe
-const createPoseLandmarker = async () => {
+// Laad PoseLandmarker
+async function createPoseLandmarker() {
     const vision = await FilesetResolver.forVisionTasks("https://cdn.jsdelivr.net/npm/@mediapipe/tasks-vision@0.10.0/wasm");
     poseLandmarker = await PoseLandmarker.createFromOptions(vision, {
         baseOptions: {
@@ -36,88 +33,84 @@ const createPoseLandmarker = async () => {
         runningMode: "VIDEO",
         numPoses: 2
     });
-    enableWebcamButton.addEventListener("click", enableCam);
-    enableWebcamButton.innerText = "Start de Game!"
-    console.log("poselandmarker is ready!")
-};
 
-// enable webcam
-function enableCam(event) {
-    console.log("start the webcam")
+    enableWebcamButton.addEventListener("click", enableCam);
+    enableWebcamButton.innerText = "Start de Game!";
+    console.log("PoseLandmarker is ready!");
+}
+
+// Webcam starten en predictie loop starten
+function enableCam() {
     if (!poseLandmarker) {
-        console.log("Wait! poseLandmaker not loaded yet.");
+        console.log("PoseLandmarker not loaded yet.");
         return;
     }
+
     webcamRunning = true;
-    enableWebcamButton.innerText = "Predicting";
-    enableWebcamButton.disabled = true
+    enableWebcamButton.innerText = "Detecting...";
+    enableWebcamButton.disabled = true;
 
-    const constraints = {
+    navigator.mediaDevices.getUserMedia({
         video: {
-            width: { exact: 480 },
-            height: { exact: 270 }
+            width: { exact: videoWidth },
+            height: { exact: videoHeight }
         }
-    };
-
-    // Activate the webcam stream.
-    navigator.mediaDevices.getUserMedia(constraints).then((stream) => {
+    }).then((stream) => {
         video.srcObject = stream;
-        video.addEventListener("loadeddata", async () => {
-            canvasElement.style.height = videoHeight;
-            canvasElement.style.width = videoWidth;
-            video.style.height = videoHeight;
-            video.style.width = videoWidth;
-            predictWebcam();
+        video.play(); // zorg dat de video echt afspeelt
+
+        video.addEventListener("loadeddata", () => {
+            video.width = videoWidth;
+            video.height = videoHeight;
+            canvasElement.width = videoWidth;
+            canvasElement.height = videoHeight;
+            predictWebcam(); // start de analyse-loop
         });
+    }).catch(err => {
+        console.error("Webcam access failed:", err);
     });
 }
 
-// predict webcam
-async function predictWebcam() {
-    let startTimeMs = performance.now();
-    poseLandmarker.detectForVideo(video, performance.now(), (result) => drawPose(result));
+// Voorspellen en tekenen
+function predictWebcam() {
+    if (!webcamRunning) return;
 
-    if (webcamRunning === true) {
+    poseLandmarker.detectForVideo(video, performance.now(), result => {
+        drawPose(result);
         window.requestAnimationFrame(predictWebcam);
-    }
+    });
 }
 
-// draw the poses or log them in the console
+// Pose tekenen op canvas
 function drawPose(result) {
     canvasCtx.clearRect(0, 0, canvasElement.width, canvasElement.height);
-    // log de coordinaten
-    //console.log(result)
-    globalresult = result
-    // teken de coordinaten in het canvas
+    globalresult = result;
+
     for (const landmark of result.landmarks) {
         drawingUtils.drawLandmarks(landmark, { radius: 3 });
         drawingUtils.drawConnectors(landmark, PoseLandmarker.POSE_CONNECTIONS);
     }
 }
 
-function capturePose(pose) {
-  console.log(`Show data for ${pose} pose`);
-  // console.log(globalresult.landmarks[0]);
+// Posegegevens opslaan
+function capturePose(poseName) {
+    if (!globalresult?.landmarks?.[0]) {
+        console.warn("Geen pose gevonden om op te slaan.");
+        return;
+    }
 
-  let temp = [];
+    const poseData = [];
+    for (let landmark of globalresult.landmarks[0]) {
+        poseData.push(landmark.x, landmark.y, landmark.z);
+    }
 
-  for (let landmark of globalresult.landmarks[0]) {
-    console.log(landmark.x);
-    console.log(landmark.y);
-    console.log(landmark.z);
-    temp.push(landmark.x, landmark.y, landmark.z);
-  }
-  console.log(temp);
+    console.log(`Pose: ${poseName}`, poseData);
 }
 
-const buttons = document.querySelectorAll('button[data-pose]');
-buttons.forEach(button => {
-  button.addEventListener('click', (event) => {
-    const pose = event.target.getAttribute('data-pose');
-    capturePose(pose);
-  });
+// Buttons koppelen aan pose capture
+document.querySelectorAll('button[data-pose]').forEach(button => {
+    button.addEventListener('click', (event) => {
+        const pose = event.target.getAttribute('data-pose');
+        capturePose(pose);
+    });
 });
-
-
-
-startApp()
