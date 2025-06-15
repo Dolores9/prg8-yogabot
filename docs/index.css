@@ -79,6 +79,10 @@ button:hover {
   background-color: #b4d3e2a6;
 }
 
+#classifyButton {
+display: none;
+}
+
 .videoView {
   position: relative;
   width: 80vw;

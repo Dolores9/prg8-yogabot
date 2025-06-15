@@ -127,6 +127,7 @@ function enableCam(event) {
             video.style.height = videoHeight;
             video.style.width = videoWidth;
             predictWebcam();
+            startAutoClassification();
         });
     });
 }
@@ -170,6 +171,17 @@ function classifyCurrentPose() {
     console.log(`I think this is a ${prediction}`);
     alert.textContent = `I think this is a ${prediction}`;
 
+}
+
+// Start automatische classificatie na 5 seconden
+function startAutoClassification(delay = 5000, interval = 2000) {
+    setTimeout(() => {
+        setInterval(() => {
+            if (webcamRunning) {
+                classifyCurrentPose();
+            }
+        }, interval);
+    }, delay);
 }
 
 // Start de applicatie zodra de pagina geladen is
